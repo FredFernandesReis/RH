@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="hero-section py-5">
+    <div class="container py-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="badge rounded-pill text-bg-light mb-3">Consultoria de Recursos Humanos</span>
+                <h1 class="display-5 fw-bold">Atracao e Selecao com estrategia, agilidade e precisao tecnica</h1>
+                <p class="lead text-muted mt-3">Somos uma consultoria em Recursos Humanos com atuacao em Recrutamento & Selecao e projetos de Atracao e Selecao para diferentes segmentos de mercado.</p>
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <a href="{% url 'jobs:list' %}" class="btn btn-primary btn-lg">Ver vagas abertas</a>
+                    <a href="{% url 'core:contact' %}" class="btn btn-outline-primary btn-lg">Falar com consultor</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0 p-4 metric-card">
+                    <h5 class="mb-3">Segmentos com experiencia consolidada</h5>
+                    <ul class="mb-0">
+                        <li>Mineracao e industria</li>
+                        <li>Logistica e agronegocio</li>
+                        <li>Tecnologia e automotivo</li>
+                        <li>Mercado financeiro</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container py-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Quem somos</h2>
+        <p class="text-muted">Equipe com experiencia estrategica e operacional em Recursos Humanos.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm p-3">
+                <img src="{% static 'images/presentation/ppt/media/image5.jpeg' %}" class="img-fluid rounded mb-3" alt="Barbara Oliveira">
+                <h5>Barbara Fernandes Cruz de Oliveira</h5>
+                <p class="text-muted mb-2">Psicologa, MBA em Gestao de Negocios, especializacao em Avaliacao Psicologica e mestrado em Neurociencias em andamento.</p>
+                <p class="mb-0">Mais de 15 anos de experiencia em RH, com foco em Recrutamento & Selecao, Hunting, avaliacoes psicologicas, indicadores e projetos de grande volume.</p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card h-100 border-0 shadow-sm p-3">
+                <img src="{% static 'images/presentation/ppt/media/image8.jpeg' %}" class="img-fluid rounded mb-3" alt="Rose Tassiane">
+                <h5>Rose Tassiane</h5>
+                <p class="text-muted mb-2">Psicologa com formacoes em assessment, metodologias de recrutamento e ferramentas de Talent Acquisition.</p>
+                <p class="mb-0">Atuacao consolidada em Business Partner, Executive Search, Talent Intelligence, Diversity & Inclusion e mapeamento estrategico de mercado.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container pb-5">
+    <div class="card border-0 shadow-sm p-4 p-lg-5">
+        <h3 class="mb-3">Missao, visao e valores</h3>
+        <p class="text-muted">Nossa missao e conectar pessoas, impulsionar resultados e apoiar estrategicamente as empresas para alcancar seu maximo potencial com etica, precisao tecnica e olhar humano.</p>
+        <div class="row g-3 mt-1">
+            <div class="col-md-4"><div class="p-3 bg-light rounded">Empatia</div></div>
+            <div class="col-md-4"><div class="p-3 bg-light rounded">Compromisso</div></div>
+            <div class="col-md-4"><div class="p-3 bg-light rounded">Inovacao, Agilidade e Qualidade</div></div>
+        </div>
+        <hr>
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h4 class="mb-2">Por que escolher a Vertice RH?</h4>
+                <ul class="mb-0 text-muted">
+                    <li>Atuacao personalizada para cada cliente.</li>
+                    <li>Captacao ativa para identificar os melhores profissionais.</li>
+                    <li>Analises criteriosas alinhadas aos objetivos do negocio.</li>
+                    <li>Ferramentas e relatorios modernos.</li>
+                    <li>Experiencia etica, respeitosa e participativa para candidatos e clientes.</li>
+                </ul>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <a href="{% url 'core:services' %}" class="btn btn-primary">Conhecer servicos</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
