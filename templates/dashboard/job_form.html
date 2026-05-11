@@ -1,4 +1,6 @@
-{% extends "base.html" %}
+{% extends "dashboard/base_panel.html" %}
+
+{% block title %}Editar vaga | Painel{% endblock %}
 
 {% block content %}
 <section class="container py-5">
@@ -28,7 +30,7 @@
                         {% endif %}
                     </div>
                 {% endfor %}
-                <button class="btn btn-primary" type="submit">Salvar alteracoes</button>
+                <button class="btn btn-primary" type="submit">Salvar alterações</button>
             </form>
         </div>
     </div>

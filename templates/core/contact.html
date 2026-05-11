@@ -2,11 +2,13 @@
 
 {% block content %}
 <section class="container py-5">
-    <h1 class="mb-2">Solicite seu orcamento</h1>
-    <p class="text-muted mb-4">Propostas sob medida para atracao e selecao, com cronograma estrategico e modelo de investimento por taxa de recrutamento.</p>
+    <div class="reveal">
+        <h1 class="mb-2">Solicite seu orçamento</h1>
+        <p class="text-muted mb-4">Propostas sob medida para atração e seleção, com cronograma estratégico e modelo de investimento por taxa de recrutamento.</p>
+    </div>
     <div class="row g-4">
         <div class="col-lg-7">
-            <form method="post" class="card border-0 shadow-sm p-4">
+            <form method="post" class="card border-0 shadow-sm p-4 reveal reveal-delay-1">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label class="form-label">Nome</label>
@@ -14,7 +16,11 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">E-mail</label>
-                    <input name="email" type="email" class="form-control" required>
+                    <input name="email" type="email" class="form-control" required autocomplete="email">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Telefone / WhatsApp <span class="text-muted fw-normal">(opcional)</span></label>
+                    <input name="phone" type="tel" class="form-control" placeholder="Ex.: 31 99999-0000" autocomplete="tel">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Mensagem</label>
@@ -24,22 +30,22 @@
             </form>
         </div>
         <div class="col-lg-5">
-            <div class="card border-0 shadow-sm p-4 h-100">
+            <div class="card border-0 shadow-sm p-4 h-100 reveal reveal-delay-2">
                 <h5 class="mb-3">Contato direto</h5>
-                <p class="mb-1"><strong>Barbara Oliveira</strong></p>
+                <p class="mb-1"><strong>Bárbara Oliveira</strong></p>
                 <p class="mb-1">Telefone: 31 98844-4129</p>
-                <p class="mb-3">E-mail: barbara@verticerh.com</p>
+                <p class="mb-3">E-mail: <a class="link-underline-hover text-muted" href="mailto:barbara@verticerh.com">barbara@verticerh.com</a></p>
 
                 <p class="mb-1"><strong>Rose Tassiane</strong></p>
                 <p class="mb-1">Telefone: 31 98364-4153</p>
-                <p class="mb-3">E-mail: rose@verticerh.com</p>
+                <p class="mb-3">E-mail: <a class="link-underline-hover text-muted" href="mailto:rose@verticerh.com">rose@verticerh.com</a></p>
 
                 <hr>
                 <h6 class="mb-2">Modelo comercial</h6>
                 <ul class="text-muted mb-0">
-                    <li>Taxa de ativacao para inicio imediato da busca.</li>
-                    <li>Taxa final apos admissao do profissional.</li>
-                    <li>Garantia de reposicao de 45 dias.</li>
+                    <li>Taxa de ativação para início imediato da busca.</li>
+                    <li>Taxa final após admissão do profissional.</li>
+                    <li>Garantia de reposição de 45 dias.</li>
                 </ul>
             </div>
         </div>

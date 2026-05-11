@@ -21,8 +21,14 @@ def contact(request):
         name = request.POST.get("name", "").strip()
         email = request.POST.get("email", "").strip()
         message = request.POST.get("message", "").strip()
+        phone = request.POST.get("phone", "").strip()
         if name and email and message:
-            BudgetRequest.objects.create(name=name, email=email, message=message)
+            BudgetRequest.objects.create(
+                name=name,
+                email=email,
+                phone=phone,
+                message=message,
+            )
         messages.success(request, "Recebemos sua mensagem e retornaremos em breve.")
         return redirect("core:contact")
     return render(request, "core/contact.html")

@@ -1,14 +1,20 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils import timezone
+from django.views.decorators.http import require_POST
 
 from candidates.models import Application
 from core.models import BudgetRequest
 from jobs.forms import JobForm
 from jobs.models import Job
 
+from .decorators import panel_login_required
 
-@login_required
+
+@panel_login_required
 def panel(request):
     status_filter = request.GET.get("status", "").strip()
     section = request.GET.get("section", "candidaturas")
@@ -22,7 +28,7 @@ def panel(request):
         if job_form.is_valid():
             job_form.save()
             messages.success(request, "Vaga criada com sucesso.")
-            return redirect("dashboard:panel")
+            return redirect(reverse("dashboard:panel") + "?" + urlencode({"section": "vagas"}))
     else:
         job_form = JobForm()
 
@@ -32,6 +38,7 @@ def panel(request):
         "screening": all_applications.filter(status=Application.Status.SCREENING).count(),
         "interview": all_applications.filter(status=Application.Status.INTERVIEW).count(),
         "approved": all_applications.filter(status=Application.Status.APPROVED).count(),
+        "rejected": all_applications.filter(status=Application.Status.REJECTED).count(),
     }
 
     context = {
@@ -40,14 +47,15 @@ def panel(request):
         "section": section,
         "statuses": Application.Status.choices,
         "stats": stats,
-        "budget_requests": BudgetRequest.objects.all()[:8],
+        "budget_requests": BudgetRequest.objects.all()[:50],
+        "budget_unread_count": BudgetRequest.objects.filter(read_at__isnull=True).count(),
         "jobs": Job.objects.all(),
         "job_form": job_form,
     }
     return render(request, "dashboard/panel.html", context)
 
 
-@login_required
+@panel_login_required
 def update_status(request, application_id):
     application = get_object_or_404(Application, pk=application_id)
     new_status = request.POST.get("status")
@@ -61,7 +69,23 @@ def update_status(request, application_id):
     return redirect("dashboard:panel")
 
 
-@login_required
+@panel_login_required
+@require_POST
+def delete_application(request, application_id):
+    application = get_object_or_404(Application, pk=application_id)
+    name = application.full_name
+    if application.resume:
+        application.resume.delete(save=False)
+    application.delete()
+    messages.success(request, f"Candidatura de {name} foi excluída.")
+    params = {"section": "candidaturas"}
+    status_q = request.POST.get("status_filter", "").strip()
+    if status_q:
+        params["status"] = status_q
+    return redirect(reverse("dashboard:panel") + "?" + urlencode(params))
+
+
+@panel_login_required
 def edit_job(request, job_id):
     job = get_object_or_404(Job, pk=job_id)
     if request.method == "POST":
@@ -69,8 +93,44 @@ def edit_job(request, job_id):
         if form.is_valid():
             form.save()
             messages.success(request, "Vaga atualizada com sucesso.")
-            return redirect("dashboard:panel")
+            return redirect(reverse("dashboard:panel") + "?" + urlencode({"section": "vagas"}))
     else:
         form = JobForm(instance=job)
 
     return render(request, "dashboard/job_form.html", {"form": form, "job": job})
+
+
+@panel_login_required
+@require_POST
+def delete_job(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    title = job.title
+    applications = list(job.applications.all())
+    n_apps = len(applications)
+    for app in applications:
+        if app.resume:
+            app.resume.delete(save=False)
+    job.delete()
+    if n_apps:
+        messages.success(
+            request,
+            f'Vaga "{title}" excluída. Foram removidas também {n_apps} candidatura(s) vinculadas.',
+        )
+    else:
+        messages.success(request, f'Vaga "{title}" excluída.')
+    return redirect(reverse("dashboard:panel") + "?" + urlencode({"section": "vagas"}))
+
+
+@panel_login_required
+def budget_request_detail(request, pk):
+    budget_req = get_object_or_404(BudgetRequest, pk=pk)
+    if budget_req.read_at is None:
+        budget_req.read_at = timezone.now()
+        budget_req.save(update_fields=["read_at"])
+    return render(
+        request,
+        "dashboard/budget_detail.html",
+        {
+            "budget_req": budget_req,
+        },
+    )

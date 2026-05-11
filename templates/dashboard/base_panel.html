@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block body_class %}is-panel{% endblock %}
+
+{% block site_navbar %}
+<nav class="navbar navbar-expand-lg sticky-top nav-professional panel-topbar">
+    <div class="container-fluid px-3 px-lg-4">
+        <a class="navbar-brand fw-bold panel-brand-mark d-flex align-items-center gap-2" href="{% url 'dashboard:panel' %}">
+            <span class="panel-brand-icon" aria-hidden="true"></span>
+            Vertice RH
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#panelNav" aria-controls="panelNav" aria-expanded="false" aria-label="Abrir menu do painel">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="panelNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1 flex-wrap">
+                <li class="nav-item">
+                    <a class="btn btn-sm btn-primary rounded-pill w-100 w-lg-auto px-3" href="{% url 'core:home' %}">Site público</a>
+                </li>
+                <li class="nav-item px-lg-2">
+                    <span class="navbar-text panel-user-name py-2 d-block">
+                        <span class="small text-uppercase text-muted d-block d-lg-inline panel-user-label">Logado como</span>
+                        <span class="fw-semibold ms-lg-1">{% if user.first_name %}{{ user.first_name }}{% if user.last_name %} {{ user.last_name }}{% endif %}{% else %}{{ user.get_username }}{% endif %}</span>
+                    </span>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill theme-toggle w-100 w-lg-auto" aria-pressed="false" aria-label="Alternar modo claro ou escuro">
+                        <span class="theme-toggle-text">Modo escuro</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <a class="btn btn-sm btn-outline-danger rounded-pill w-100 w-lg-auto" href="{% url 'logout' %}">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block site_footer %}{% endblock %}

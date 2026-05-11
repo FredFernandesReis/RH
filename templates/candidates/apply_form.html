@@ -2,11 +2,17 @@
 
 {% block content %}
 <section class="container py-5">
-    <h1>Candidatura - {{ job.title }}</h1>
-    <p class="text-muted">Preencha seus dados para participar do processo seletivo.</p>
+    <a href="{% url 'jobs:detail' job.pk %}" class="text-decoration-none d-inline-flex align-items-center gap-2 public-back-link reveal mb-3">
+        <span aria-hidden="true">←</span> Voltar à vaga
+    </a>
+    <div class="reveal mb-4">
+        <p class="public-eyebrow mb-2">Candidatura</p>
+        <h1 class="h2 fw-bold">{{ job.title }}</h1>
+        <p class="text-muted mb-0">Preencha seus dados para participar do processo seletivo.</p>
+    </div>
     <div class="row">
         <div class="col-lg-8">
-            <form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm p-4">
+            <form method="post" enctype="multipart/form-data" class="card border-0 shadow-sm p-4 reveal reveal-delay-1">
                 {% csrf_token %}
                 {% for field in form %}
                     <div class="mb-3">

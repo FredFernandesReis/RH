@@ -17,7 +17,12 @@ _raw_debug = os.environ.get("DEBUG")
 if _raw_debug is not None:
     DEBUG = _raw_debug.lower() in ("true", "1", "yes")
 else:
-    DEBUG = os.environ.get("DATABASE_URL") is None
+    # Local: sem DATABASE_URL → DEBUG ligado. Produção: use DATABASE_URL (Postgres) ou defina DJANGO_PRODUCTION=1
+    DEBUG = os.environ.get("DATABASE_URL") is None and os.environ.get("DJANGO_PRODUCTION", "").lower() not in (
+        "1",
+        "true",
+        "yes",
+    )
 
 _hosts = os.environ.get("ALLOWED_HOSTS", "").strip()
 ALLOWED_HOSTS = [h.strip() for h in _hosts.split(",") if h.strip()]
@@ -71,6 +76,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "core.context_processors.panel_access",
             ],
         },
     },

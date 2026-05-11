@@ -1,33 +1,44 @@
 {% extends "base.html" %}
 
 {% block content %}
-<section class="container py-5">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
-        <div>
-            <h1 class="mb-1">Vagas abertas</h1>
-            <p class="text-muted mb-0">{{ total_jobs }} oportunidade(s) disponivel(is)</p>
+<section class="jobs-list-hero py-5 mb-2 reveal">
+    <div class="container">
+        <div class="row align-items-end g-3">
+            <div class="col-lg-7">
+                <p class="public-eyebrow mb-2">Oportunidades</p>
+                <h1 class="display-6 fw-bold mb-2">Vagas abertas</h1>
+                <p class="text-muted mb-0">{{ total_jobs }} oportunidade{% if total_jobs != 1 %}s{% endif %} disponível{% if total_jobs != 1 %}eis{% endif %}</p>
+            </div>
+            <div class="col-lg-5">
+                <form method="get" class="d-flex gap-2 flex-wrap flex-lg-nowrap" role="search">
+                    <input class="form-control" type="search" name="q" placeholder="Buscar por cargo ou palavra-chave" value="{{ search }}" aria-label="Buscar vaga">
+                    <button class="btn btn-primary flex-shrink-0" type="submit">Buscar</button>
+                </form>
+            </div>
         </div>
-        <form method="get" class="d-flex" role="search">
-            <input class="form-control me-2" type="search" name="q" placeholder="Buscar vaga" value="{{ search }}">
-            <button class="btn btn-outline-primary" type="submit">Buscar</button>
-        </form>
     </div>
+</section>
 
+<section class="container pb-5">
     <div class="row g-4">
         {% for job in jobs %}
             <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ job.title }}</h5>
-                        <p class="text-muted mb-1">{{ job.department }} - {{ job.location }}</p>
-                        <p class="mb-3"><span class="badge text-bg-light">{{ job.get_work_model_display }}</span></p>
-                        <p class="text-muted small">Vaga publicada para profissionais alinhados a cultura e metas da empresa.</p>
-                        <a href="{% url 'jobs:detail' job.pk %}" class="btn btn-sm btn-primary">Ver detalhes</a>
+                <article class="card h-100 border-0 shadow-sm job-card reveal reveal-stagger position-relative" style="--reveal-d: {{ forloop.counter0 }}">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                            <h2 class="h5 card-title mb-0">{{ job.title }}</h2>
+                            <span class="badge rounded-pill text-bg-light job-model-badge">{{ job.get_work_model_display }}</span>
+                        </div>
+                        <p class="text-muted small mb-3">{{ job.department }} · {{ job.location }}</p>
+                        <p class="text-muted small flex-grow-1 mb-3">Processo com triagem criteriosa e comunicação clara em cada etapa.</p>
+                        <a href="{% url 'jobs:detail' job.pk %}" class="btn btn-primary align-self-start job-card-cta">Ver detalhes</a>
                     </div>
-                </div>
+                </article>
             </div>
         {% empty %}
-            <p>Nenhuma vaga encontrada.</p>
+            <div class="col-12 text-center py-5 reveal">
+                <p class="text-muted mb-0">Nenhuma vaga encontrada. Tente outro termo na busca.</p>
+            </div>
         {% endfor %}
     </div>
 </section>
