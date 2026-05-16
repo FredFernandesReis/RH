@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Entrar | Vertice RH{% endblock %}
+{% block title %}Entrar | Vértice RH{% endblock %}
 
 {% block content %}
 <section class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-5">
             <div class="card border-0 shadow-sm p-4 p-md-5">
-                <h1 class="h4 fw-bold mb-2">Acesso ao painel</h1>
+                <div class="text-center mb-4">
+                    {% include "partials/brand_logo.html" with brand_logo_class="justify-content-center" brand_logo_img_class="brand-logo-img--login" %}
+                </div>
+                <h1 class="h4 fw-bold mb-2 text-center">Acesso ao painel</h1>
                 <p class="text-muted small mb-4">Use o usuário e a senha criados no Admin Django. Só entram aqui contas com permissão de equipe.</p>
                 <form method="post" novalidate>
                     {% csrf_token %}

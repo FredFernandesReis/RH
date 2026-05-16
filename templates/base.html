@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Vertice RH | Recrutamento e Seleção{% endblock %}</title>
+    <title>{% block title %}Vértice RH | Recrutamento e Seleção{% endblock %}</title>
     <script>
         (function () {
             try {
@@ -21,9 +21,9 @@
 </head>
 <body class="site-body d-flex flex-column min-vh-100 {% block body_class %}{% endblock %}">
     {% block site_navbar %}
-    <nav class="navbar navbar-expand-lg sticky-top nav-professional">
+    <nav class="navbar navbar-expand-lg sticky-top nav-professional py-0">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'core:home' %}">Vertice RH</a>
+            {% include "partials/brand_logo.html" with brand_logo_class="navbar-brand py-0" brand_logo_img_class="brand-logo-img--nav" %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -42,7 +42,7 @@
     </nav>
     {% endblock %}
 
-    <main class="py-4 flex-grow-1 {% block main_extra_class %}{% endblock %}">
+    <main class="flex-grow-1 site-main {% block main_extra_class %}{% endblock %}">
         <div class="container">
             {% if messages %}
                 {% for message in messages %}
@@ -57,11 +57,11 @@
     </main>
 
     {% block site_footer %}
-    <footer class="py-5 border-top mt-5 bg-white">
+    <footer class="site-footer py-5 border-top mt-5">
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-4">
-                    <h5 class="mb-2">Vertice RH</h5>
+                    {% include "partials/brand_logo.html" with brand_logo_class="mb-2" brand_logo_img_class="brand-logo-img--footer" %}
                     <p class="text-muted mb-0">Consultoria de recrutamento e seleção com foco em agilidade, qualidade e experiência humana.</p>
                 </div>
                 <div class="col-md-4">
@@ -85,7 +85,7 @@
             </div>
             <hr>
             <div class="text-center text-muted small">
-                <small>Vertice RH — recrutamento estratégico e humano</small>
+                <small>Vértice RH — recrutamento estratégico e humano</small>
                 <span class="mx-2">|</span>
                 {% if user.is_authenticated %}
                     {% if can_access_panel %}

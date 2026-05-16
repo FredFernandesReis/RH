@@ -37,6 +37,8 @@ body {
 
 .site-body main {
     min-height: 50vh;
+    padding-top: 0.75rem !important;
+    padding-bottom: 1.5rem !important;
 }
 
 .navbar-brand {
@@ -50,11 +52,97 @@ body {
     color: var(--vrh-primary) !important;
 }
 
+.brand-logo-link {
+    text-decoration: none;
+    line-height: 0;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.brand-logo-link.navbar-brand {
+    margin-right: 0.5rem;
+    padding: 0 !important;
+    max-height: 2.25rem;
+}
+
+.brand-logo-link.navbar-brand:hover {
+    opacity: 0.88;
+}
+
+.brand-logo-img {
+    display: block;
+    width: auto;
+    object-fit: contain;
+    object-position: left center;
+}
+
+.brand-logo-img--nav {
+    height: 34px !important;
+    max-height: 34px !important;
+    width: auto !important;
+    max-width: 142px !important;
+}
+
+.brand-logo-img--footer {
+    height: 24px !important;
+    max-height: 24px !important;
+    max-width: 104px !important;
+}
+
+.brand-logo-img--login {
+    height: 32px !important;
+    max-height: 32px !important;
+    max-width: 120px !important;
+    margin-inline: auto;
+}
+
+[data-bs-theme="dark"] .brand-logo-img {
+    filter: none;
+}
+
+.nav-professional.navbar {
+    --bs-navbar-padding-y: 0;
+    min-height: 0 !important;
+    max-height: none;
+    padding: 0 !important;
+}
+
 .nav-professional {
     backdrop-filter: blur(12px);
     background: var(--vrh-surface) !important;
     border-bottom: 1px solid rgba(15, 76, 129, 0.08) !important;
-    box-shadow: 0 4px 24px var(--vrh-shadow);
+    box-shadow: 0 2px 12px var(--vrh-shadow);
+}
+
+.nav-professional > .container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    min-height: 52px;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+}
+
+@media (min-width: 992px) {
+    .nav-professional > .container {
+        flex-wrap: nowrap;
+    }
+}
+
+.nav-professional .nav-link {
+    font-size: 0.875rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.nav-professional .theme-toggle {
+    font-size: 0.8125rem;
+    padding: 0.2rem 0.65rem;
+}
+
+.nav-professional .navbar-toggler {
+    padding: 0.2rem 0.45rem;
+    font-size: 0.9rem;
 }
 
 .nav-link {
@@ -244,6 +332,7 @@ h5 {
     font-weight: 600;
 }
 
+.site-footer,
 footer {
     background: rgba(255, 255, 255, 0.88) !important;
     backdrop-filter: blur(10px);
@@ -298,6 +387,35 @@ footer a.text-muted:hover {
     border-radius: 999px;
     background: linear-gradient(90deg, var(--vrh-primary), var(--vrh-accent));
     margin-bottom: 0.75rem;
+}
+
+.page-header {
+    margin-bottom: 1.25rem;
+}
+
+.page-header-title {
+    font-size: clamp(1.375rem, 3vw, 1.75rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+    line-height: 1.2;
+}
+
+.page-header-lead {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    max-width: 40rem;
+}
+
+.page-header .section-heading-accent {
+    width: 36px;
+    height: 3px;
+    margin-bottom: 0.5rem;
+}
+
+.page-header .public-eyebrow {
+    margin-bottom: 0.35rem !important;
+    font-size: 0.65rem;
 }
 
 .value-pill {
@@ -526,7 +644,12 @@ footer a.text-muted:hover {
     border-bottom-color: rgba(148, 163, 184, 0.15);
 }
 
-[data-bs-theme="dark"] footer {
+[data-bs-theme="dark"] .page-header-title {
+    color: #f1f5f9;
+}
+
+[data-bs-theme="dark"] footer,
+[data-bs-theme="dark"] .site-footer {
     background: rgba(15, 23, 42, 0.92) !important;
     border-top-color: rgba(148, 163, 184, 0.15) !important;
 }
@@ -842,10 +965,6 @@ footer a.text-muted:hover {
 }
 
 /* --- Site público: visual e animações --- */
-.public-hero {
-    position: relative;
-}
-
 .public-hero-decor {
     position: absolute;
     inset: 0;
@@ -969,17 +1088,48 @@ footer a.text-muted:hover {
     }
 }
 
-.public-profile-card img {
-    transition: transform 0.45s var(--vrh-ease-out);
-}
-
-.public-profile-img-wrap {
+.team-card-photo {
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
     overflow: hidden;
-    border-radius: 0.65rem;
+    background: linear-gradient(145deg, #e0edff 0%, #f0fdfa 100%);
+    padding: 3px;
+    box-shadow: 0 8px 24px rgba(15, 76, 129, 0.15);
 }
 
-.public-profile-card:hover img {
-    transform: scale(1.03);
+.team-card-photo img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.team-card-photo--barbara img {
+    object-position: center 18%;
+}
+
+.team-card-photo--rose img {
+    object-position: center 10%;
+}
+
+.team-card-role {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: #0d9488;
+    margin-bottom: 0;
+}
+
+[data-bs-theme="dark"] .team-card-photo {
+    background: linear-gradient(145deg, rgba(56, 189, 248, 0.2) 0%, rgba(20, 184, 166, 0.15) 100%);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+[data-bs-theme="dark"] .team-card-role {
+    color: #2dd4bf;
 }
 
 .public-mvv-card {
@@ -1041,6 +1191,45 @@ footer a.text-muted:hover {
 .jobs-list-hero {
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(241, 245, 249, 0.65) 100%);
     border-bottom: 1px solid rgba(15, 76, 129, 0.08);
+    padding-top: 1.25rem !important;
+    padding-bottom: 1.25rem !important;
+    margin-bottom: 0 !important;
+}
+
+.jobs-list-hero .display-6 {
+    font-size: clamp(1.35rem, 3vw, 1.65rem);
+    margin-bottom: 0.35rem !important;
+}
+
+.jobs-list-hero .public-eyebrow {
+    margin-bottom: 0.35rem !important;
+}
+
+.public-hero {
+    position: relative;
+    padding-top: 1.5rem !important;
+    padding-bottom: 1.5rem !important;
+}
+
+.public-hero .container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+}
+
+.public-hero .hero-title {
+    font-size: clamp(1.5rem, 4vw, 2.1rem);
+    line-height: 1.15;
+}
+
+.public-hero .hero-lead {
+    font-size: 1rem;
+    margin-top: 0.65rem !important;
+}
+
+.public-hero .hero-badge {
+    margin-bottom: 0.65rem !important;
+    font-size: 0.75rem;
+    padding: 0.3rem 0.7rem;
 }
 
 .job-card {
@@ -1112,7 +1301,7 @@ footer a.text-muted:hover {
     .public-hero-orb,
     .float-slow,
     .btn-public-pulse::after,
-    .public-profile-card:hover img,
+    .card:hover,
     .value-pill-anim:hover,
     .job-card:hover {
         animation: none !important;

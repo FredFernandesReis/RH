@@ -1,0 +1,10 @@
+{% load static %}
+<a class="brand-logo-link d-inline-flex align-items-center{% if brand_logo_class %} {{ brand_logo_class }}{% endif %}" href="{% if brand_logo_href %}{{ brand_logo_href }}{% else %}{% url 'core:home' %}{% endif %}">
+    <img
+        src="{% if brand_logo_file %}{% static brand_logo_file %}{% else %}{% static 'images/logo-vertice-rh.svg' %}{% endif %}"
+        alt="Vértice RH"
+        class="brand-logo-img{% if brand_logo_img_class %} {{ brand_logo_img_class }}{% endif %}"
+        decoding="async"
+        {% if not brand_logo_file %}onerror="this.onerror=null;this.src='{% static 'images/logo-vertice-rh.png' %}';"{% endif %}
+    >
+</a>

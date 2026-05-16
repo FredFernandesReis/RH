@@ -6,10 +6,8 @@
 {% block site_navbar %}
 <nav class="navbar navbar-expand-lg sticky-top nav-professional panel-topbar">
     <div class="container-fluid px-3 px-lg-4">
-        <a class="navbar-brand fw-bold panel-brand-mark d-flex align-items-center gap-2" href="{% url 'dashboard:panel' %}">
-            <span class="panel-brand-icon" aria-hidden="true"></span>
-            Vertice RH
-        </a>
+        {% url 'dashboard:panel' as panel_url %}
+        {% include "partials/brand_logo.html" with brand_logo_href=panel_url brand_logo_class="navbar-brand py-0 panel-brand-mark" brand_logo_img_class="brand-logo-img--nav" %}
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#panelNav" aria-controls="panelNav" aria-expanded="false" aria-label="Abrir menu do painel">
             <span class="navbar-toggler-icon"></span>
         </button>
