@@ -1,10 +1,12 @@
 from urllib.parse import urlencode
 
 from django.contrib import messages
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from candidates.models import Application
 from core.models import BudgetRequest
@@ -41,6 +43,8 @@ def panel(request):
         "rejected": all_applications.filter(status=Application.Status.REJECTED).count(),
     }
 
+    latest_budget = BudgetRequest.objects.order_by("-created_at").first()
+
     context = {
         "applications": applications,
         "status_filter": status_filter,
@@ -49,10 +53,28 @@ def panel(request):
         "stats": stats,
         "budget_requests": BudgetRequest.objects.all()[:50],
         "budget_unread_count": BudgetRequest.objects.filter(read_at__isnull=True).count(),
+        "budget_total_count": BudgetRequest.objects.count(),
+        "budget_latest_id": latest_budget.pk if latest_budget else 0,
         "jobs": Job.objects.all(),
         "job_form": job_form,
     }
     return render(request, "dashboard/panel.html", context)
+
+
+def _budget_requests_payload():
+    budget_requests = list(BudgetRequest.objects.all()[:50])
+    unread_count = BudgetRequest.objects.filter(read_at__isnull=True).count()
+    latest = budget_requests[0] if budget_requests else None
+    return {
+        "budget_requests": budget_requests,
+        "unread_count": unread_count,
+        "total_count": BudgetRequest.objects.count(),
+        "latest_id": latest.pk if latest else 0,
+        "rows_html": render_to_string(
+            "dashboard/partials/budget_requests_rows.html",
+            {"budget_requests": budget_requests},
+        ),
+    }
 
 
 @panel_login_required
@@ -134,3 +156,21 @@ def budget_request_detail(request, pk):
             "budget_req": budget_req,
         },
     )
+
+
+@panel_login_required
+@require_POST
+def delete_budget_request(request, pk):
+    budget_req = get_object_or_404(BudgetRequest, pk=pk)
+    name = budget_req.name
+    budget_req.delete()
+    messages.success(request, f'Solicitação de orçamento de "{name}" foi excluída.')
+    next_url = request.POST.get("next") or reverse("dashboard:panel") + "?" + urlencode({"section": "contatos"})
+    return redirect(next_url)
+
+
+@panel_login_required
+@require_GET
+def budget_requests_refresh(request):
+    payload = _budget_requests_payload()
+    return JsonResponse(payload)

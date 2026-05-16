@@ -20,7 +20,7 @@
                     <li class="mb-2"><strong>Candidaturas:</strong> veja nome, contato e vaga. Clique em <strong>Abrir PDF</strong> para baixar o currículo. Use o menu de status e <strong>Salvar</strong> para mover o candidato (Novo → Triagem → Entrevista → Aprovado ou Reprovado). Use <strong>Excluir</strong> para remover registros antigos (o arquivo do currículo também é apagado).</li>
                     <li class="mb-2"><strong>Filtro:</strong> no topo da lista, filtre por status para focar em quem está em triagem ou entrevista.</li>
                     <li class="mb-2"><strong>Vagas:</strong> cadastre novas posições ou edite as existentes. Desmarque “Ativa” para ocultar a vaga do site sem apagar. <strong>Excluir</strong> remove a vaga e todas as candidaturas ligadas a ela (e os arquivos de currículo).</li>
-                    <li class="mb-0"><strong>Orçamentos:</strong> cada envio do formulário de contato aparece na lista. <strong>Nova</strong> indica que ainda não foi aberta; use <strong>Abrir</strong> para ler a mensagem completa, telefone e e-mail (ao abrir, marca como lida).</li>
+                    <li class="mb-0"><strong>Orçamentos:</strong> cada envio do formulário de contato aparece na lista. <strong>Nova</strong> indica que ainda não foi aberta; use <strong>Abrir</strong> para ler a mensagem completa. <strong>Atualizar</strong> busca novos envios; você recebe um aviso quando chegar solicitação nova. <strong>Excluir</strong> remove o registro permanentemente.</li>
                 </ol>
                 <p class="small text-muted mt-3 mb-0">
                     <strong>Acesso da equipe:</strong> no Admin Django, abra o usuário e marque <strong>Status da equipe</strong> ou adicione o grupo <strong>Equipe Painel Vertice RH</strong> (recomendado para quem não precisa entrar no /admin).
@@ -37,11 +37,11 @@
             <a href="?section=vagas" class="nav-link {% if section == 'vagas' %}active{% endif %}">Vagas</a>
         </li>
         <li class="nav-item">
-            <a href="?section=contatos" class="nav-link d-inline-flex align-items-center gap-2 {% if section == 'contatos' %}active{% endif %}">
+            <a href="?section=contatos" class="nav-link d-inline-flex align-items-center gap-2 {% if section == 'contatos' %}active{% endif %}" id="budget-nav-link">
                 Orçamentos
-                {% if budget_unread_count %}
-                    <span class="badge rounded-pill bg-danger">{{ budget_unread_count }} nova{% if budget_unread_count != 1 %}s{% endif %}</span>
-                {% endif %}
+                <span id="budget-nav-badge" class="{% if not budget_unread_count %}d-none{% endif %}">
+                    <span class="badge rounded-pill bg-danger budget-nav-badge-pulse" id="budget-unread-count">{{ budget_unread_count }} nova{% if budget_unread_count != 1 %}s{% endif %}</span>
+                </span>
             </a>
         </li>
     </ul>
@@ -250,13 +250,20 @@
                 <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
                     <div>
                         <h2 class="h5 fw-bold mb-1">Solicitações de orçamento</h2>
-                        <p class="small text-muted mb-0">Últimas 50 mensagens do site. <strong>Abrir</strong> mostra o texto completo e os dados de contato.</p>
+                        <p class="small text-muted mb-0">Últimas 50 mensagens do site. <span id="budget-total-label">{{ budget_total_count }}</span> no total.</p>
                     </div>
-                    {% if budget_unread_count %}
-                        <div class="alert alert-info border-0 py-2 px-3 mb-0 small">
-                            Você tem <strong>{{ budget_unread_count }}</strong> solicitação{% if budget_unread_count != 1 %}ões{% endif %} não lida{% if budget_unread_count != 1 %}s{% endif %}.
-                        </div>
-                    {% endif %}
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-primary rounded-pill" id="budget-refresh-btn" aria-live="polite">
+                            <span class="budget-refresh-label">Atualizar</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="alert alert-info border-0 py-2 px-3 mb-3 small {% if not budget_unread_count %}d-none{% endif %}" id="budget-unread-alert" role="status">
+                    Você tem <strong id="budget-unread-alert-count">{{ budget_unread_count }}</strong> solicitação{% if budget_unread_count != 1 %}ões{% else %}ão{% endif %} não lida{% if budget_unread_count != 1 %}s{% endif %}.
+                </div>
+                <div class="budget-new-toast alert alert-success border-0 shadow-sm d-none mb-3" id="budget-new-toast" role="alert">
+                    <strong>Nova solicitação de orçamento!</strong> <span id="budget-new-toast-text"></span>
+                    <a href="?section=contatos" class="alert-link ms-1">Ver agora</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-middle mb-0 panel-table">
@@ -268,31 +275,11 @@
                                 <th>Telefone</th>
                                 <th>Prévia</th>
                                 <th>Recebida</th>
-                                <th class="text-end"></th>
+                                <th class="text-end">Ações</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {% for req in budget_requests %}
-                                <tr class="{% if req.is_unread %}panel-budget-row-unread{% endif %}">
-                                    <td>
-                                        {% if req.is_unread %}
-                                            <span class="badge text-bg-warning text-dark">Nova</span>
-                                        {% else %}
-                                            <span class="badge text-bg-secondary">Lida</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="fw-medium">{{ req.name }}</td>
-                                    <td><a href="mailto:{{ req.email }}">{{ req.email }}</a></td>
-                                    <td class="text-nowrap">{% if req.phone %}{{ req.phone }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
-                                    <td class="text-muted small" style="max-width: 14rem">{{ req.message|truncatechars:80 }}</td>
-                                    <td class="text-nowrap small">{{ req.created_at|date:"d/m/Y H:i" }}</td>
-                                    <td class="text-end">
-                                        <a class="btn btn-sm btn-primary" href="{% url 'dashboard:budget_detail' req.pk %}">Abrir</a>
-                                    </td>
-                                </tr>
-                            {% empty %}
-                                <tr><td colspan="7" class="text-muted text-center py-4">Nenhuma solicitação recebida ainda.</td></tr>
-                            {% endfor %}
+                        <tbody id="budget-requests-tbody">
+                            {% include "dashboard/partials/budget_requests_rows.html" %}
                         </tbody>
                     </table>
                 </div>
@@ -300,4 +287,142 @@
         </div>
     {% endif %}
 </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+(function () {
+    var refreshUrl = "{% url 'dashboard:budget_requests_refresh' %}";
+    var section = "{{ section|escapejs }}";
+    var state = {
+        unread: {{ budget_unread_count }},
+        latestId: {{ budget_latest_id }},
+        total: {{ budget_total_count }},
+    };
+    var pollMs = 45000;
+    var toastTimer;
+
+    function updateNavBadge(count) {
+        var wrap = document.getElementById("budget-nav-badge");
+        var badge = document.getElementById("budget-unread-count");
+        if (!wrap || !badge) return;
+        if (count > 0) {
+            wrap.classList.remove("d-none");
+            badge.textContent = count + " nova" + (count === 1 ? "" : "s");
+        } else {
+            wrap.classList.add("d-none");
+        }
+    }
+
+    function updateUnreadAlert(count) {
+        var alert = document.getElementById("budget-unread-alert");
+        var countEl = document.getElementById("budget-unread-alert-count");
+        if (!alert || !countEl) return;
+        if (count > 0) {
+            alert.classList.remove("d-none");
+            countEl.textContent = String(count);
+        } else {
+            alert.classList.add("d-none");
+        }
+    }
+
+    function showNewToast(delta) {
+        var toast = document.getElementById("budget-new-toast");
+        var text = document.getElementById("budget-new-toast-text");
+        if (!toast || !text) return;
+        text.textContent =
+            delta === 1
+                ? "Chegou 1 nova solicitação."
+                : "Chegaram " + delta + " novas solicitações.";
+        toast.classList.remove("d-none");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () {
+            toast.classList.add("d-none");
+        }, 12000);
+    }
+
+    function applyPayload(data, notify) {
+        var prevUnread = state.unread;
+        var prevLatest = state.latestId;
+        state.unread = data.unread_count;
+        state.latestId = data.latest_id;
+        state.total = data.total_count;
+
+        updateNavBadge(state.unread);
+        updateUnreadAlert(state.unread);
+
+        var totalLabel = document.getElementById("budget-total-label");
+        if (totalLabel) totalLabel.textContent = String(state.total);
+
+        var tbody = document.getElementById("budget-requests-tbody");
+        if (tbody && data.rows_html !== undefined) {
+            tbody.innerHTML = data.rows_html;
+        }
+
+        if (notify) {
+            var newArrival = data.latest_id > prevLatest;
+            var moreUnread = data.unread_count > prevUnread;
+            if (newArrival || moreUnread) {
+                var delta = Math.max(data.unread_count - prevUnread, 1);
+                showNewToast(delta);
+            }
+        }
+    }
+
+    function refreshBudget(notify) {
+        var btn = document.getElementById("budget-refresh-btn");
+        var label = btn && btn.querySelector(".budget-refresh-label");
+        if (label) label.textContent = "Atualizando…";
+        if (btn) btn.disabled = true;
+
+        return fetch(refreshUrl, {
+            headers: { Accept: "application/json" },
+            credentials: "same-origin",
+        })
+            .then(function (r) {
+                if (!r.ok) throw new Error("refresh failed");
+                return r.json();
+            })
+            .then(function (data) {
+                applyPayload(data, notify);
+            })
+            .catch(function () {
+                if (notify) alert("Não foi possível atualizar agora. Tente de novo em instantes.");
+            })
+            .finally(function () {
+                if (label) label.textContent = "Atualizar";
+                if (btn) btn.disabled = false;
+            });
+    }
+
+    var refreshBtn = document.getElementById("budget-refresh-btn");
+    if (refreshBtn) {
+        refreshBtn.addEventListener("click", function () {
+            refreshBudget(true);
+        });
+    }
+
+    var tbody = document.getElementById("budget-requests-tbody");
+    if (tbody) {
+        tbody.addEventListener("click", function (e) {
+            var btn = e.target.closest("[data-budget-delete]");
+            if (!btn) return;
+            var name = btn.getAttribute("data-budget-name") || "esta solicitação";
+            if (
+                !confirm(
+                    "Excluir permanentemente a solicitação de " +
+                        name +
+                        "? Esta ação não pode ser desfeita."
+                )
+            ) {
+                e.preventDefault();
+            }
+        });
+    }
+
+    setInterval(function () {
+        refreshBudget(section !== "contatos");
+    }, pollMs);
+})();
+</script>
 {% endblock %}

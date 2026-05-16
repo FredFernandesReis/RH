@@ -41,6 +41,12 @@
             <div class="budget-detail-message p-4 rounded-3 border">
                 {{ budget_req.message|linebreaks }}
             </div>
+            <div class="d-flex flex-wrap gap-2 mt-4 pt-3 border-top">
+                <form method="post" action="{% url 'dashboard:delete_budget_request' budget_req.pk %}" class="d-inline" onsubmit="return confirm('Excluir permanentemente esta solicitação? Esta ação não pode ser desfeita.');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger">Excluir solicitação</button>
+                </form>
+            </div>
         </div>
     </div>
 </section>

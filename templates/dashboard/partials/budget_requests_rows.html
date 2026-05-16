@@ -1,0 +1,27 @@
+{% for req in budget_requests %}
+    <tr class="{% if req.is_unread %}panel-budget-row-unread{% endif %}" data-budget-id="{{ req.pk }}">
+        <td>
+            {% if req.is_unread %}
+                <span class="badge text-bg-warning text-dark">Nova</span>
+            {% else %}
+                <span class="badge text-bg-secondary">Lida</span>
+            {% endif %}
+        </td>
+        <td class="fw-medium">{{ req.name }}</td>
+        <td><a href="mailto:{{ req.email }}">{{ req.email }}</a></td>
+        <td class="text-nowrap">{% if req.phone %}{{ req.phone }}{% else %}<span class="text-muted">—</span>{% endif %}</td>
+        <td class="text-muted small panel-budget-preview">{{ req.message|truncatechars:80 }}</td>
+        <td class="text-nowrap small">{{ req.created_at|date:"d/m/Y H:i" }}</td>
+        <td class="text-end text-nowrap">
+            <a class="btn btn-sm btn-primary" href="{% url 'dashboard:budget_detail' req.pk %}">Abrir</a>
+            <form method="post" action="{% url 'dashboard:delete_budget_request' req.pk %}" class="d-inline">
+                {% csrf_token %}
+                <button class="btn btn-sm btn-outline-danger" type="submit" title="Excluir solicitação" data-budget-delete data-budget-name="{{ req.name|escape }}">Excluir</button>
+            </form>
+        </td>
+    </tr>
+{% empty %}
+    <tr id="budget-empty-row">
+        <td colspan="7" class="text-muted text-center py-4">Nenhuma solicitação recebida ainda.</td>
+    </tr>
+{% endfor %}
